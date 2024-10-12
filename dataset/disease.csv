@@ -47,7 +47,7 @@ Hypertensive Heart Disease,No,No,Yes,No,30,Female,High,High,Positive
 Influenza,Yes,Yes,Yes,No,30,Male,High,Normal,Positive
 Influenza,Yes,Yes,Yes,Yes,30,Female,Normal,Normal,Positive
 Multiple Sclerosis,No,No,Yes,No,30,Female,High,High,Positive
-Myocardial Infarction (Heart...,Yes,Yes,Yes,Yes,30,Female,High,High,Positive
+Myocardial Infarction (Heart Attack),Yes,Yes,Yes,Yes,30,Female,High,High,Positive
 Urinary Tract Infection (UTI),Yes,No,No,No,30,Female,Normal,Normal,Positive
 Asthma,No,No,No,Yes,31,Male,Normal,Low,Negative
 Osteoporosis,No,No,No,Yes,31,Male,Low,Normal,Negative
@@ -129,7 +129,7 @@ Asthma,Yes,No,Yes,Yes,40,Male,Normal,High,Positive
 Chickenpox,No,Yes,No,No,40,Male,Normal,High,Positive
 Chickenpox,No,Yes,No,No,40,Male,Normal,High,Positive
 Coronary Artery Disease,No,No,Yes,No,40,Female,High,High,Positive
-"Eating Disorders (Anorexia,...",No,No,Yes,No,40,Female,High,High,Positive
+"Eating Disorders (Anorexia, Bulimia)",No,No,Yes,No,40,Female,High,High,Positive
 Fibromyalgia,No,No,Yes,No,40,Female,High,High,Positive
 Gastroenteritis,Yes,Yes,Yes,No,40,Male,High,High,Positive
 Hemophilia,No,No,Yes,No,40,Female,Normal,Normal,Positive
