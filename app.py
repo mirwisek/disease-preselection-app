@@ -1,6 +1,10 @@
 import json
 import time
 from mistralai import Mistral
+import sounddevice as sd
+import wavio
+import numpy as np
+import os
 
 class ChatBot:
     def __init__(self, api_key, history=None):
@@ -81,7 +85,36 @@ On every user input you have the history of your past responses and the patient'
             }
 
 
-api_key = "POVQ5Fl6l3k7ODsPuNjSgJwAxr3Svqmz"  
+api_key = "POVQ5Fl6l3k7ODsPuNjSgJwAxr3Svqmz"
+
+DURATION = 5  # Duration of the recording
+SAMPLE_RATE = 16000  # Sample rate for audio recording
+MAX_DURATION = 5 * 60  # Maximum duration for recording (in seconds)
+WAVE_OUTPUT_FILE = "recorded_audio.wav"  # Output file for recorded audio
+
+# Function to start recording audio
+def start_recording(sample_rate, max_duration):
+    """Start recording audio and store it in session state."""
+    st.session_state.recording = sd.rec(int(max_duration * sample_rate), samplerate=sample_rate, channels=1)
+    st.session_state.is_recording = True
+
+# Function to stop recording and save audio to file
+def stop_recording(output_file, sample_rate):
+    """Stop recording and save audio to file, trimming to the actual recording length."""
+    sd.stop()
+    st.session_state.is_recording = False
+
+    # Trim the recording to the actual length recorded
+    recording = st.session_state.recording
+    recorded_length = np.where(recording != 0)[0][-1] + 1 if np.any(recording != 0) else 0
+    trimmed_recording = recording[:recorded_length] if recorded_length > 0 else recording
+
+    # Save the trimmed recording to the output file
+    if recorded_length > 0:
+        wavio.write(output_file, trimmed_recording, sample_rate, sampwidth=2)
+        st.success(f"Recording saved to {output_file}")
+    else:
+        st.error("No audio was recorded. Please try again.")
 
 import streamlit as st
 
@@ -94,12 +127,11 @@ def ask(user_input, chatbot):
         return chatbot_response
     else:
         return chatbot_response
-
+    
 
 if __name__ == "__main__":
     import streamlit as st
     import json
-
 
     # Initialize session state to keep track of inputs
     if 'inputs' not in st.session_state:
@@ -109,6 +141,11 @@ if __name__ == "__main__":
         st.session_state.inputs.append(initial_question)
         st.session_state.chatbot = ChatBot(api_key)
         st.session_state.report = None
+
+    # Initialize session state to keep track of recording state
+    if 'is_recording' not in st.session_state:
+        st.session_state.is_recording = False
+        st.session_state.recording = None
 
     st.title("Interactive Questioning App")
 
@@ -130,6 +167,22 @@ if __name__ == "__main__":
                 user_input = st.session_state[f"input_{i}"]
                 handle_input(user_input)
                 st.rerun()  # Rerun the app to update inputs
+
+    # Toggle between "Record" and "Stop Recording" states
+    if not st.session_state.is_recording:
+        # If not recording, show the "Record" button
+        if st.button('Record'):
+            start_recording(SAMPLE_RATE, MAX_DURATION)
+            st.rerun()  # Immediately rerun to update the state
+    else:
+        # If recording, show the "Stop Recording" button
+        if st.button('Stop Recording'):
+            stop_recording(WAVE_OUTPUT_FILE, SAMPLE_RATE)
+            st.rerun()  # Immediately rerun to update the state
+
+    # Play the recorded audio
+    if os.path.exists(WAVE_OUTPUT_FILE):
+        st.audio(WAVE_OUTPUT_FILE, format='audio/wav')
 
     # Check if there are any inputs before accessing the last one
     if st.session_state.inputs:
