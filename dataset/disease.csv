@@ -60,13 +60,13 @@ Asthma,Yes,Yes,Yes,Yes,35,Female,Normal,Normal,Negative
 Asthma,No,Yes,Yes,Yes,35,Female,High,Normal,Negative
 Asthma,No,Yes,Yes,Yes,35,Female,High,Normal,Negative
 Atherosclerosis,No,No,Yes,No,35,Male,Normal,Normal,Negative
-Chronic Obstructive Pulmonary...,Yes,Yes,Yes,Yes,35,Male,Normal,Normal,Negative
+Chronic Obstructive Pulmonary,Yes,Yes,Yes,Yes,35,Male,Normal,Normal,Negative
 Common Cold,Yes,Yes,Yes,No,35,Male,High,Normal,Negative
 Eczema,No,Yes,No,No,35,Male,High,Normal,Negative
 Epilepsy,No,No,Yes,No,35,Male,High,High,Negative
 Hypertension,Yes,Yes,Yes,No,35,Female,High,Normal,Negative
 Hyperthyroidism,Yes,Yes,Yes,No,35,Female,Normal,Normal,Negative
-Obsessive-Compulsive Disorde...,No,No,Yes,No,35,Male,Normal,Normal,Negative
+Obsessive-Compulsive Disorder,No,No,Yes,No,35,Male,Normal,Normal,Negative
 Pneumonia,Yes,Yes,Yes,Yes,35,Female,Normal,Normal,Negative
 Pneumonia,Yes,Yes,Yes,Yes,35,Female,Normal,Normal,Negative
 Psoriasis,Yes,No,No,No,35,Female,Normal,Low,Negative
@@ -268,7 +268,7 @@ Osteoporosis,No,Yes,Yes,No,55,Female,Normal,Normal,Positive
 Osteoporosis,Yes,No,Yes,No,55,Female,Normal,Normal,Positive
 Osteoporosis,Yes,No,Yes,No,55,Female,Normal,Normal,Positive
 Polycystic Ovary Syndrome (PCOS),Yes,Yes,No,No,55,Female,Normal,Normal,Positive
-Systemic Lupus Erythematosus...,No,Yes,Yes,No,55,Female,High,High,Positive
+Systemic Lupus Erythematosus,No,Yes,Yes,No,55,Female,High,High,Positive
 Typhoid Fever,No,Yes,No,No,55,Male,Normal,Low,Positive
 Typhoid Fever,No,Yes,No,No,55,Male,Normal,Low,Positive
 Influenza,Yes,Yes,Yes,Yes,56,Male,High,High,Positive
