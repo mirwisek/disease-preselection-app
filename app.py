@@ -5,6 +5,9 @@ import sounddevice as sd
 import wavio
 import numpy as np
 import os
+from utils import transcribe_audio
+
+import streamlit as st
 
 class ChatBot:
     def __init__(self, api_key, history=None):
@@ -103,6 +106,7 @@ def stop_recording(output_file, sample_rate):
     """Stop recording and save audio to file, trimming to the actual recording length."""
     sd.stop()
     st.session_state.is_recording = False
+    st.session_state.has_recording = True
 
     # Trim the recording to the actual length recorded
     recording = st.session_state.recording
@@ -112,11 +116,13 @@ def stop_recording(output_file, sample_rate):
     # Save the trimmed recording to the output file
     if recorded_length > 0:
         wavio.write(output_file, trimmed_recording, sample_rate, sampwidth=2)
-        st.success(f"Recording saved to {output_file}")
+        recorded_duration_seconds = recorded_length / sample_rate
+        st.session_state.is_long_audio = recorded_duration_seconds >= 60
     else:
+        st.session_state.is_long_audio = False
+        st.session_state.has_recording = False
         st.error("No audio was recorded. Please try again.")
 
-import streamlit as st
 
 # Define the ask function (replace this with your actual implementation)
 def ask(user_input, chatbot):
@@ -146,6 +152,7 @@ if __name__ == "__main__":
     if 'is_recording' not in st.session_state:
         st.session_state.is_recording = False
         st.session_state.recording = None
+        st.session_state.has_recording = False # Show transcript if the audio is already recorded
 
     st.title("Interactive Questioning App")
 
@@ -168,15 +175,25 @@ if __name__ == "__main__":
                 handle_input(user_input)
                 st.rerun()  # Rerun the app to update inputs
 
+    voice_text_output = st.empty()
+    btn_record = st.empty()
+
     # Toggle between "Record" and "Stop Recording" states
     if not st.session_state.is_recording:
         # If not recording, show the "Record" button
-        if st.button('Record'):
+        if btn_record.button('Record'):
             start_recording(SAMPLE_RATE, MAX_DURATION)
             st.rerun()  # Immediately rerun to update the state
+
+        if st.session_state.has_recording:
+            # Transcribe the audio
+            with st.spinner('Transcribing audio...'):
+                transcripted_text = transcribe_audio(WAVE_OUTPUT_FILE, is_long_audio=st.session_state.is_long_audio)
+                voice_text_output.markdown(transcripted_text)
+        
     else:
         # If recording, show the "Stop Recording" button
-        if st.button('Stop Recording'):
+        if btn_record.button('Stop Recording'):
             stop_recording(WAVE_OUTPUT_FILE, SAMPLE_RATE)
             st.rerun()  # Immediately rerun to update the state
 
