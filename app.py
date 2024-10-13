@@ -5,7 +5,7 @@ import sounddevice as sd
 import wavio
 import numpy as np
 import os
-from utils import transcribe_audio
+from utils import transcribe_audio, text_to_wav
 
 import streamlit as st
 
@@ -171,11 +171,17 @@ if __name__ == "__main__":
             st.session_state.inputs.append(response["question"])
             st.session_state.output_history += '\n\n' + f'Question: {response["question"]}'
             output_box.markdown(st.session_state.output_history)
+            audio_out_file = text_to_wav("en-US-Neural2-A", response["question"])
+                # Play the recorded audio
+            if os.path.exists(audio_out_file):
+                st.audio(audio_out_file, format='audio/wav', autoplay=True)
 
         elif "report" in response:
             st.session_state.report = response["report"]
             st.session_state.output_history += '\n\n' + f'Report: {response["report"]}'
             output_box.markdown(st.session_state.output_history)
+            text_to_wav("en-US-Neural2-A", response["report"])
+
 
     output_txt_box = st.empty()
 
@@ -212,10 +218,6 @@ if __name__ == "__main__":
         if btn_record.button('Stop Recording'):
             stop_recording(WAVE_OUTPUT_FILE, SAMPLE_RATE)
             st.rerun()  # Immediately rerun to update the state
-
-    # Play the recorded audio
-    # if os.path.exists(WAVE_OUTPUT_FILE):
-    #     st.audio(WAVE_OUTPUT_FILE, format='audio/wav')
 
     # Check if there are any inputs before accessing the last one
     if st.session_state.inputs:
