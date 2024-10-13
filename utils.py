@@ -40,7 +40,7 @@ def _transcribe_audio_source(source_file_or_gcs_uri, is_long_audio=False, lang="
     # )
     config = speech.RecognitionConfig(
         auto_decoding_config=speech.AutoDetectDecodingConfig(),
-        language_codes=["en-US", "fr-FR", "es-ES", "it-IT"],
+        language_codes=["en-US", "fr-FR", "it-IT"],
         model="long",
     )
 

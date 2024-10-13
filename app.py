@@ -20,7 +20,7 @@ You are a medical assistant chatbot responsible for triaging patients as they ar
 On every user input you have the history of your past responses and the patient's responses.
 
 # Instructions:
-1. Ask up to five questions to quickly understand the patient's: 
+1. Ask strictly upto five questions to quickly understand the patient's: 
     - main complaint.
     - the duration and progression of symptoms.
     - pain or discomfort level.
@@ -127,7 +127,7 @@ def stop_recording(output_file, sample_rate):
 
 # Define the ask function (replace this with your actual implementation)
 def ask(user_input, chatbot):
-    # print(chatbot.history)
+    print(chatbot.history)
     chatbot_response = chatbot.get_response(user_input)
     # This is a mock implementation. Replace it with your actual function logic.
     if "report" in chatbot_response:
@@ -157,7 +157,8 @@ if __name__ == "__main__":
         st.session_state.recording = None
         st.session_state.has_recording = False # Show transcript if the audio is already recorded
 
-    st.title("Interactive Questioning App")
+    st.image('SwiftBird-Logo.png', width=100)
+    st.title("Swift Bird - ER Assistant")
 
     # Function to handle user input and response
     def handle_input(output_box, user_input):
@@ -181,7 +182,7 @@ if __name__ == "__main__":
             st.session_state.report = response["report"]
             st.session_state.output_history += '\n\n' + f'Report: {response["report"]}'
             output_box.markdown(st.session_state.output_history)
-            text_to_wav("Neural2-A", response["report"], language_code=detected_lang)
+            # text_to_wav("Neural2-A", response["report"], language_code=detected_lang)
 
 
     output_txt_box = st.empty()
@@ -191,7 +192,7 @@ if __name__ == "__main__":
     if st.session_state.output_history:
         outputs = st.markdown(st.session_state.output_history)
     else:
-        outputs = st.markdown(f"Question: {initial_question}")
+        outputs = st.markdown(f"# Question: {initial_question}")
 
     if st.button(f"Submit Answer", key=f"button"):
         user_input = st.session_state[f"input"]
