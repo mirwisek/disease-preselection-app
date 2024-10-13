@@ -126,7 +126,7 @@ def stop_recording(output_file, sample_rate):
 
 # Define the ask function (replace this with your actual implementation)
 def ask(user_input, chatbot):
-    print(chatbot.history)
+    # print(chatbot.history)
     chatbot_response = chatbot.get_response(user_input)
     # This is a mock implementation. Replace it with your actual function logic.
     if "report" in chatbot_response:
@@ -138,14 +138,16 @@ def ask(user_input, chatbot):
 if __name__ == "__main__":
     import streamlit as st
     import json
+    
+    initial_question = "Hey, what brings you here today?"
 
     # Initialize session state to keep track of inputs
     if 'inputs' not in st.session_state:
         st.session_state.inputs = []
         # Add the initial question to the session state
-        initial_question = "Hey, what brings you here today?"
         st.session_state.inputs.append(initial_question)
         st.session_state.chatbot = ChatBot(api_key)
+        st.session_state.output_history = ""
         st.session_state.report = None
 
     # Initialize session state to keep track of recording state
@@ -157,23 +159,60 @@ if __name__ == "__main__":
     st.title("Interactive Questioning App")
 
     # Function to handle user input and response
-    def handle_input(user_input):
-        response = ask(user_input, st.session_state.chatbot)
+    def handle_input(output_box, user_input, output_history):
+        
         st.session_state.inputs.append(user_input)
+        st.session_state.output_history += '\n\n' + user_input
+        output_box.markdown(st.session_state.output_history)
+
+        response = ask(user_input, st.session_state.chatbot)
 
         if "question" in response:
             st.session_state.inputs.append(response["question"])
+            st.session_state.output_history += '\n\n' + f'Question: {response["question"]}'
+            output_box.markdown(st.session_state.output_history)
+
         elif "report" in response:
             st.session_state.report = response["report"]
+            st.session_state.output_history += '\n\n' + f'Report: {response["report"]}'
+            output_box.markdown(st.session_state.output_history)
+
+        
+            
+
+    
+    # Single input field for user input and submission button
+    # user_input = st.text_input("Enter your response or question:")
+    # if st.button("Submit") and user_input:
+    #     handle_input(user_input)
+    #     st.rerun()  # Rerun the app to update inputs
+
+    output_txt_box = st.empty()
+
+    # Display concatenated output of all inputs and responses
+    # concatenated_output = "\n\n".join([f"**Question {i//2 + 1 if i % 2 == 0 else ''}:** {input_text}" for i, input_text in enumerate(st.session_state.inputs)])
 
     # Render inputs and responses
-    for i, input_text in enumerate(st.session_state.inputs):
-        if i % 2 == 0:  # Even index means a question
-            st.text_input(f"Question {i//2 + 1}: {input_text}", key=f"input_{i}")
-            if st.button(f"Submit Answer {i//2 + 1}", key=f"button_{i}"):
-                user_input = st.session_state[f"input_{i}"]
-                handle_input(user_input)
-                st.rerun()  # Rerun the app to update inputs
+    # for i, input_text in enumerate(st.session_state.inputs):
+    #     if i % 2 == 0:  # Even index means a question
+    #         st.text_input(f"Question {i//2 + 1}: {input_text}", key=f"input_{i}")
+    #         if st.button(f"Submit Answer {i//2 + 1}", key=f"button_{i}"):
+    #             user_input = st.session_state[f"input_{i}"]
+    #             handle_input(user_input)
+    #             st.rerun()  # Rerun the app to update inputs
+
+    st.text_input(f"Enter your answer here...", key=f"input")
+
+    if st.session_state.output_history:
+        outputs = st.markdown(st.session_state.output_history)
+    else:
+        outputs = st.markdown(f"Question: {initial_question}")
+
+    if st.button(f"Submit Answer", key=f"button"):
+        user_input = st.session_state[f"input"]
+        handle_input(outputs, user_input, st.session_state.output_history)
+        st.rerun()  # Rerun the app to update inputs
+
 
     voice_text_output = st.empty()
     btn_record = st.empty()
