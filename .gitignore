@@ -1,2 +1,4 @@
 temp
 *.zip
+*.wav
+__pycache__

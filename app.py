@@ -94,6 +94,7 @@ DURATION = 5  # Duration of the recording
 SAMPLE_RATE = 16000  # Sample rate for audio recording
 MAX_DURATION = 5 * 60  # Maximum duration for recording (in seconds)
 WAVE_OUTPUT_FILE = "recorded_audio.wav"  # Output file for recorded audio
+detected_lang = 'en-US'
 
 # Function to start recording audio
 def start_recording(sample_rate, max_duration):
@@ -171,7 +172,7 @@ if __name__ == "__main__":
             st.session_state.inputs.append(response["question"])
             st.session_state.output_history += '\n\n' + f'Question: {response["question"]}'
             output_box.markdown(st.session_state.output_history)
-            audio_out_file = text_to_wav("en-US-Neural2-A", response["question"])
+            audio_out_file = text_to_wav("Standard-A", response["question"], language_code=detected_lang)
                 # Play the recorded audio
             if os.path.exists(audio_out_file):
                 st.audio(audio_out_file, format='audio/wav', autoplay=True)
@@ -180,7 +181,7 @@ if __name__ == "__main__":
             st.session_state.report = response["report"]
             st.session_state.output_history += '\n\n' + f'Report: {response["report"]}'
             output_box.markdown(st.session_state.output_history)
-            text_to_wav("en-US-Neural2-A", response["report"])
+            text_to_wav("Neural2-A", response["report"], language_code=detected_lang)
 
 
     output_txt_box = st.empty()
@@ -209,7 +210,7 @@ if __name__ == "__main__":
         if st.session_state.has_recording:
             # Transcribe the audio
             with st.spinner('Transcribing audio...'):
-                transcripted_text = transcribe_audio(WAVE_OUTPUT_FILE, is_long_audio=st.session_state.is_long_audio)
+                transcripted_text, detected_lang = transcribe_audio(WAVE_OUTPUT_FILE, is_long_audio=st.session_state.is_long_audio)
                 # voice_text_output.markdown(transcripted_text)
                 handle_input(outputs, transcripted_text)
         
