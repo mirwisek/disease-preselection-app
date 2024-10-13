@@ -159,7 +159,7 @@ if __name__ == "__main__":
     st.title("Interactive Questioning App")
 
     # Function to handle user input and response
-    def handle_input(output_box, user_input, output_history):
+    def handle_input(output_box, user_input):
         
         st.session_state.inputs.append(user_input)
         st.session_state.output_history += '\n\n' + user_input
@@ -177,29 +177,7 @@ if __name__ == "__main__":
             st.session_state.output_history += '\n\n' + f'Report: {response["report"]}'
             output_box.markdown(st.session_state.output_history)
 
-        
-            
-
-    
-    # Single input field for user input and submission button
-    # user_input = st.text_input("Enter your response or question:")
-    # if st.button("Submit") and user_input:
-    #     handle_input(user_input)
-    #     st.rerun()  # Rerun the app to update inputs
-
     output_txt_box = st.empty()
-
-    # Display concatenated output of all inputs and responses
-    # concatenated_output = "\n\n".join([f"**Question {i//2 + 1 if i % 2 == 0 else ''}:** {input_text}" for i, input_text in enumerate(st.session_state.inputs)])
-
-    # Render inputs and responses
-    # for i, input_text in enumerate(st.session_state.inputs):
-    #     if i % 2 == 0:  # Even index means a question
-    #         st.text_input(f"Question {i//2 + 1}: {input_text}", key=f"input_{i}")
-    #         if st.button(f"Submit Answer {i//2 + 1}", key=f"button_{i}"):
-    #             user_input = st.session_state[f"input_{i}"]
-    #             handle_input(user_input)
-    #             st.rerun()  # Rerun the app to update inputs
 
     st.text_input(f"Enter your answer here...", key=f"input")
 
@@ -210,11 +188,9 @@ if __name__ == "__main__":
 
     if st.button(f"Submit Answer", key=f"button"):
         user_input = st.session_state[f"input"]
-        handle_input(outputs, user_input, st.session_state.output_history)
+        handle_input(outputs, user_input)
         st.rerun()  # Rerun the app to update inputs
 
-
-    voice_text_output = st.empty()
     btn_record = st.empty()
 
     # Toggle between "Record" and "Stop Recording" states
@@ -228,7 +204,8 @@ if __name__ == "__main__":
             # Transcribe the audio
             with st.spinner('Transcribing audio...'):
                 transcripted_text = transcribe_audio(WAVE_OUTPUT_FILE, is_long_audio=st.session_state.is_long_audio)
-                voice_text_output.markdown(transcripted_text)
+                # voice_text_output.markdown(transcripted_text)
+                handle_input(outputs, transcripted_text)
         
     else:
         # If recording, show the "Stop Recording" button
@@ -237,8 +214,8 @@ if __name__ == "__main__":
             st.rerun()  # Immediately rerun to update the state
 
     # Play the recorded audio
-    if os.path.exists(WAVE_OUTPUT_FILE):
-        st.audio(WAVE_OUTPUT_FILE, format='audio/wav')
+    # if os.path.exists(WAVE_OUTPUT_FILE):
+    #     st.audio(WAVE_OUTPUT_FILE, format='audio/wav')
 
     # Check if there are any inputs before accessing the last one
     if st.session_state.inputs:
